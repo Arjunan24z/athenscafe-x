@@ -84,7 +84,7 @@ export class AuthService {
     const tokens = generateTokens({
       userId: user.id,
       email: user.email,
-      role: user.role,
+      role: user.role as UserRole,
     })
 
     return {
@@ -93,7 +93,7 @@ export class AuthService {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        role: user.role,
+        role: user.role as UserRole,
       },
       ...tokens,
     }
@@ -134,7 +134,7 @@ export class AuthService {
     const tokens = generateTokens({
       userId: user.id,
       email: user.email,
-      role: user.role,
+      role: user.role as UserRole,
     })
 
     return {
@@ -143,7 +143,7 @@ export class AuthService {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        role: user.role,
+        role: user.role as UserRole,
       },
       ...tokens,
     }
@@ -188,7 +188,7 @@ export class AuthService {
     const tokens = generateTokens({
       userId: user.id,
       email: user.email,
-      role: user.role,
+      role: user.role as UserRole,
     })
 
     return tokens

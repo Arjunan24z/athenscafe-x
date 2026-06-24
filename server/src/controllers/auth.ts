@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import { z } from 'zod'
 import { AuthService } from '../services/auth.js'
 import { RegisterSchema, LoginSchema } from '../utils/validation.js'
 import { AppError } from '../utils/errors.js'
@@ -10,7 +9,8 @@ import { AppError } from '../utils/errors.js'
  */
 export const registerController = async (req: Request, res: Response) => {
   // Validate input
-  const input = RegisterSchema.parse(req.body)
+  const validatedData = RegisterSchema.parse(req.body)
+  const input = { ...validatedData, role: validatedData.role as any }
 
   // Register user
   const result = await AuthService.register(input)
