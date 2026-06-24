@@ -1,0 +1,13 @@
+# Prisma Migrations
+
+This folder contains all database migrations.
+
+Run migrations with:
+```bash
+npm run db:migrate
+```
+
+Auto-push schema to database:
+```bash
+npm run db:push
+```
