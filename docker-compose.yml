@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: cafesmart-postgres
+    environment:
+      POSTGRES_USER: cafesmart_user
+      POSTGRES_PASSWORD: cafesmart_password
+      POSTGRES_DB: cafesmart_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cafesmart_user -d cafesmart_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cafesmart-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: cafesmart-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cafesmart-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  cafesmart-network:
+    driver: bridge

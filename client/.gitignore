@@ -1,0 +1,33 @@
+# CafeSmart Client
+
+React + Vite + Tailwind CSS frontend for CafeSmart school cafeteria system.
+
+## Development
+
+```bash
+npm install
+npm run dev
+```
+
+The app will run on `http://localhost:3000`
+
+## Project Structure
+
+```
+src/
+├── components/       # Reusable React components
+├── pages/           # Page components (routes)
+├── hooks/           # Custom React hooks
+├── context/         # Context providers (global state)
+├── utils/           # Utility functions
+├── types/           # TypeScript type definitions
+├── App.tsx          # Main app component
+└── main.tsx         # React DOM render
+```
+
+## Build
+
+```bash
+npm run build
+npm run preview
+```

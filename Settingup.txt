@@ -1,0 +1,167 @@
+Great choice! Let me lay out the complete roadmap before we write a single line of code.
+
+---
+
+## CafeSmart — Full Implementation Roadmap
+
+### Phase 0 — Project Setup & Architecture (Do First)
+```
+Step 0.1 — Monorepo structure (client/ + server/ + shared/)
+Step 0.2 — Git repo + .gitignore + README
+Step 0.3 — Environment config strategy (.env files)
+Step 0.4 — Docker Compose (Postgres + Redis locally)
+```
+
+---
+
+### Phase 1 — Backend Foundation
+```
+Step 1.1 — Node.js + Express + project structure
+Step 1.2 — PostgreSQL connection (pg / Prisma ORM)
+Step 1.3 — Redis connection (ioredis)
+Step 1.4 — Database schema design (all tables + ERD)
+Step 1.5 — JWT auth middleware (access + refresh tokens)
+Step 1.6 — Role-based access control (Parent/Student/Vendor/Admin)
+Step 1.7 — Input validation layer (Zod)
+Step 1.8 — Error handling + logging (Winston)
+```
+
+---
+
+### Phase 2 — Auth Module (Backend + Frontend)
+```
+Step 2.1 — Auth API routes (register, login, logout, refresh)
+Step 2.2 — Password hashing (bcrypt)
+Step 2.3 — React auth UI (login, register pages)
+Step 2.4 — Protected routes + role-based redirects
+Step 2.5 — Auth context + token storage strategy
+```
+
+---
+
+### Phase 3 — User Management
+```
+Step 3.1 — Admin: manage students, parents, vendors
+Step 3.2 — Parent ↔ Student linking
+Step 3.3 — Profile management (all roles)
+Step 3.4 — Avatar/photo upload
+```
+
+---
+
+### Phase 4 — Menu Management (Vendor)
+```
+Step 4.1 — Food item CRUD (name, price, category, image)
+Step 4.2 — Meal categories (Breakfast/Lunch/Snacks/Beverages)
+Step 4.3 — Diet tags (Veg, Vegan, Gluten-Free, etc.)
+Step 4.4 — Availability timings + daily quantity limits
+Step 4.5 — Nutrition info per item (calories, protein, carbs, fat)
+Step 4.6 — Admin approval workflow for menu changes
+Step 4.7 — Menu display UI (Parent/Student view)
+```
+
+---
+
+### Phase 5 — Food Ordering System
+```
+Step 5.1 — Daily order flow (browse → cart → place order)
+Step 5.2 — Weekly meal planner UI
+Step 5.3 — Advance scheduling (daily/weekly/monthly)
+Step 5.4 — Order cutoff time enforcement
+Step 5.5 — Order modify + cancel logic
+Step 5.6 — Order history (parent view)
+Step 5.7 — Upcoming orders view (vendor view)
+Step 5.8 — Real-time order status (WebSocket)
+```
+
+---
+
+### Phase 6 — Wallet & Payment System
+```
+Step 6.1 — Virtual wallet creation per student
+Step 6.2 — Wallet recharge flow (parent)
+Step 6.3 — Razorpay integration (UPI/Card/NetBanking)
+Step 6.4 — Wallet transaction ledger
+Step 6.5 — Real-time balance updates (Redis cache)
+Step 6.6 — Auto-recharge configuration
+Step 6.7 — Refund management
+Step 6.8 — Spending limits + category restrictions (parent control)
+Step 6.9 — Instant card lock/unlock
+```
+
+---
+
+### Phase 7 — QR Code Payment
+```
+Step 7.1 — Unique QR code generation per student
+Step 7.2 — QR token validation (Redis TTL-based)
+Step 7.3 — Cafeteria counter scan flow
+Step 7.4 — Payment deduction on scan
+Step 7.5 — Transaction confirmation (WebSocket push)
+```
+
+---
+
+### Phase 8 — Notifications
+```
+Step 8.1 — Email notifications (Nodemailer)
+Step 8.2 — In-app notifications (bell icon)
+Step 8.3 — Push notifications (Firebase FCM)
+Step 8.4 — Low balance alerts
+Step 8.5 — Monthly expenditure email report
+```
+
+---
+
+### Phase 9 — Analytics & Dashboards
+```
+Step 9.1 — Parent dashboard (spending, nutrition, favorites)
+Step 9.2 — Vendor dashboard (orders, revenue, inventory)
+Step 9.3 — Admin dashboard (sales, peak times, vendor performance)
+Step 9.4 — Report export (PDF + CSV)
+```
+
+---
+
+### Phase 10 — Advanced Features
+```
+Step 10.1 — AI meal recommendation engine (Claude API)
+Step 10.2 — Nutrition tracking + summary
+Step 10.3 — Sports meal plans
+Step 10.4 — Attendance integration (auto-cancel + refund)
+Step 10.5 — Meal subscription plans
+```
+
+---
+
+### Phase 11 — Deployment
+```
+Step 11.1 — Dockerize backend + frontend
+Step 11.2 — Docker Compose (production)
+Step 11.3 — Cloud VM setup (AWS EC2 / DigitalOcean / Railway)
+Step 11.4 — PostgreSQL + Redis on cloud (managed or self-hosted)
+Step 11.5 — Nginx reverse proxy + SSL (Let's Encrypt)
+Step 11.6 — CI/CD pipeline (GitHub Actions)
+Step 11.7 — Environment secrets management
+Step 11.8 — Monitoring + logging (PM2 / Datadog / UptimeRobot)
+Step 11.9 — Backup strategy (DB snapshots)
+```
+
+---
+
+## Execution Order Summary
+
+```
+Phase 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11
+Setup   Auth  Users Menu  Orders Wallet QR  Notify Analytics AI  Deploy
+```
+
+---
+
+## Before We Start — 3 Quick Decisions
+
+1. **ORM choice** — Prisma (schema-first, great DX) vs raw `pg` queries (more control). I recommend **Prisma** for this project.
+2. **Monorepo tool** — Simple folders (`client/` + `server/`) vs Turborepo. I recommend **simple folders** at your scale.
+3. **File storage** — Local disk for now, S3 later? Or start with **Cloudinary** (free tier, zero config)?
+
+Answer these and we'll kick off **Phase 0, Step 0.1** immediately — setting up the full project structure on your Mac.

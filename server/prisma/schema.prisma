@@ -1,0 +1,390 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// =====================
+// ENUMS
+// =====================
+
+enum UserRole {
+  PARENT
+  STUDENT
+  VENDOR
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  READY
+  SERVED
+  CANCELLED
+  REFUNDED
+}
+
+enum DietType {
+  VEGETARIAN
+  VEGAN
+  GLUTEN_FREE
+  HALAL
+  KOSHER
+}
+
+enum TransactionType {
+  RECHARGE
+  ORDER_DEDUCTION
+  REFUND
+  CANCELLATION
+}
+
+enum NotificationType {
+  ORDER_CONFIRMATION
+  PAYMENT_SUCCESS
+  LOW_BALANCE
+  ORDER_READY
+  MEAL_REMINDER
+}
+
+// =====================
+// CORE MODELS
+// =====================
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  phone     String?  @unique
+  firstName String
+  lastName  String
+  password  String   // hashed
+  role      UserRole
+  avatar    String?
+  isActive  Boolean  @default(true)
+
+  // Role-specific relationships
+  parent    Parent?
+  student   Student?
+  vendor    Vendor?
+  admin     Admin?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lastLogin DateTime?
+
+  @@index([email])
+  @@index([role])
+}
+
+model Parent {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phone         String?
+  address       String?
+  city          String?
+  state         String?
+  pincode       String?
+  spendingLimit Decimal? @default(0) // per month
+  isActive      Boolean  @default(true)
+
+  // Relationships
+  students       Student[]
+  orders         Order[]
+  walletBalance  Decimal  @default(0)
+  notifications  Notification[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Student {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rollNumber    String?  @unique
+  parentId      String
+  parent        Parent   @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  dateOfBirth   DateTime?
+  allergies     String?  // comma-separated or JSON
+  dietaryNeeds  DietType[]
+  medicalInfo   String?
+  isActive      Boolean  @default(true)
+
+  // Wallet & Transactions
+  qrCode        String?  @unique
+  qrCodeExpiry  DateTime?
+  walletBalance Decimal  @default(0)
+  cardLocked    Boolean  @default(false)
+  lockReason    String?
+
+  // Relationships
+  orders        Order[]
+  transactions  Transaction[]
+  qrLogs        QRLog[]
+  favorites     FavoriteFood[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([parentId])
+  @@index([qrCode])
+}
+
+model Vendor {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shopName       String
+  shopDescription String?
+  shopImage      String?
+  phone          String?
+  address        String?
+  openingTime    String   // HH:mm format
+  closingTime    String   // HH:mm format
+  isApproved     Boolean  @default(false)
+  isActive       Boolean  @default(true)
+  rating         Decimal  @default(0)
+
+  // Relationships
+  foodItems     FoodItem[]
+  orders        Order[]
+  mealPlans     MealPlan[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([isApproved])
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permissions String[] // stored as JSON
+  isActive  Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// =====================
+// FOOD & MENU MODELS
+// =====================
+
+model FoodItem {
+  id            String   @id @default(cuid())
+  vendorId      String
+  vendor        Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  name          String
+  description   String?
+  price         Decimal
+  category      String   // Breakfast, Lunch, Snacks, Beverages
+  image         String?
+  dietTypes     DietType[]
+  calories      Int?
+  protein       Decimal?
+  carbs         Decimal?
+  fat           Decimal?
+  allergens     String?  // comma-separated
+  isAvailable   Boolean  @default(true)
+  dailyQuantity Int?
+  quantitySold  Int      @default(0)
+  preparationTime Int?   // in minutes
+  isApproved    Boolean  @default(false)
+  rating        Decimal  @default(0)
+
+  // Relationships
+  orderItems    OrderItem[]
+  mealItems     MealPlanItem[]
+  favorites     FavoriteFood[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([vendorId])
+  @@index([category])
+  @@index([isAvailable])
+}
+
+model MealPlan {
+  id          String   @id @default(cuid())
+  vendorId    String
+  vendor      Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  price       Decimal
+  dietType    DietType
+  isActive    Boolean  @default(true)
+
+  // Relationships
+  items       MealPlanItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([vendorId])
+}
+
+model MealPlanItem {
+  id         String   @id @default(cuid())
+  mealPlanId String
+  mealPlan   MealPlan @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
+  foodItemId String
+  foodItem   FoodItem @relation(fields: [foodItemId], references: [id])
+
+  @@unique([mealPlanId, foodItemId])
+}
+
+model FavoriteFood {
+  id        String   @id @default(cuid())
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  foodItemId String
+  foodItem  FoodItem @relation(fields: [foodItemId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([studentId, foodItemId])
+}
+
+// =====================
+// ORDER MODELS
+// =====================
+
+model Order {
+  id              String      @id @default(cuid())
+  studentId       String
+  student         Student     @relation(fields: [studentId], references: [id])
+  parentId        String
+  parent          Parent      @relation(fields: [parentId], references: [id])
+  vendorId        String
+  vendor          Vendor      @relation(fields: [vendorId], references: [id])
+  status          OrderStatus @default(PENDING)
+  totalPrice      Decimal
+  specialRequests String?
+  orderDate       DateTime    @default(now())
+  deliveryDate    DateTime    // When the meal is to be delivered
+  servedAt        DateTime?
+  cancelledAt     DateTime?
+  cancelReason    String?
+  refundAmount    Decimal?
+
+  // Relationships
+  items           OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([studentId])
+  @@index([parentId])
+  @@index([vendorId])
+  @@index([status])
+  @@index([deliveryDate])
+}
+
+model OrderItem {
+  id         String   @id @default(cuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  foodItemId String
+  foodItem   FoodItem @relation(fields: [foodItemId], references: [id])
+  quantity   Int
+  price      Decimal  // price at time of order
+  notes      String?
+
+  @@unique([orderId, foodItemId])
+}
+
+// =====================
+// WALLET & PAYMENT MODELS
+// =====================
+
+model Transaction {
+  id              String          @id @default(cuid())
+  studentId       String
+  student         Student         @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  type            TransactionType
+  amount          Decimal
+  balanceBefore   Decimal
+  balanceAfter    Decimal
+  description     String?
+  orderId         String?
+  razorpayId      String?         // for payment gateway reference
+  paymentStatus   String?         // SUCCESS, FAILED, PENDING
+  transactionDate DateTime        @default(now())
+
+  createdAt DateTime @default(now())
+
+  @@index([studentId])
+  @@index([type])
+  @@index([transactionDate])
+}
+
+// =====================
+// QR CODE & PAYMENT MODELS
+// =====================
+
+model QRLog {
+  id        String   @id @default(cuid())
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  scannedAt DateTime @default(now())
+  amount    Decimal
+  status    String   // SUCCESS, FAILED
+  message   String?
+  vendorId  String?
+
+  @@index([studentId])
+  @@index([scannedAt])
+}
+
+// =====================
+// NOTIFICATION MODELS
+// =====================
+
+model Notification {
+  id        String           @id @default(cuid())
+  parentId  String
+  parent    Parent           @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  title     String
+  message   String
+  link      String?
+  isRead    Boolean          @default(false)
+  readAt    DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([parentId])
+  @@index([isRead])
+}
+
+// =====================
+// AUDIT MODELS
+// =====================
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  resource  String
+  resourceId String?
+  changes   String?  // JSON of before/after
+  ipAddress String?
+  timestamp DateTime @default(now())
+
+  @@index([userId])
+  @@index([resource])
+  @@index([timestamp])
+}

@@ -1,0 +1,142 @@
+Prompt: School Cafeteria Food Ordering & Smart Payment System
+Design and develop a modern web and mobile application for a school cafeteria food ordering and payment system.
+Project Overview
+The application will be used by schools, cafeteria vendors, parents, students, and administrators. The primary objective is to allow parents to pre-order meals for their children and manage cafeteria payments digitally.
+User Roles
+1. Parent
+
+• Login using student credentials or linked parent account.
+• View weekly/monthly cafeteria menu.
+• Order breakfast, lunch, snacks, and beverages for their child.
+• Schedule meals in advance (daily, weekly, or monthly).
+• Cancel or modify orders before a specified cutoff time.
+• View order history.
+• Receive notifications for successful orders, cancellations, and low wallet balance.
+• Recharge cafeteria wallet/card online.
+• Monitor food purchases made by their child.
+2. Student
+
+• Use a digital cafeteria card (QR Code/NFC/RFID).
+• Purchase food using wallet balance.
+• View available balance.
+• View transaction history.
+• Scan QR code at cafeteria counter for payment.
+3. Cafeteria Vendor
+
+• Manage food menu.
+• Add/Edit/Delete food items.
+• Configure meal categories:
+   * Breakfast
+   * Lunch
+   * Snacks
+   * Beverages
+• Define availability timings.
+• Set daily quantity limits.
+• View upcoming orders.
+• Generate preparation reports.
+• Manage inventory.
+4. School Administrator
+
+• Manage students and parents.
+• Manage cafeteria vendors.
+• Approve menu changes.
+• View revenue reports.
+• View student consumption reports.
+• Manage wallet/card system.
+• Configure school-specific rules.
+Core Features
+Food Ordering System
+
+• Daily menu display.
+• Weekly meal planner.
+• Advance ordering.
+• Meal subscription plans.
+• Special diet options:
+   * Vegetarian
+   * Vegan
+   * Gluten-Free
+   * Sports Nutrition Meals
+   * Allergy-specific meals
+Wallet/Card System
+
+• Every student receives a virtual cafeteria card.
+• Parents can recharge the card online.
+• Wallet transactions are recorded.
+• Real-time balance updates.
+• Auto recharge option.
+• Refund management.
+Payment Integration
+Support:
+
+• UPI
+• Credit/Debit Cards
+• Net Banking
+• Digital Wallets
+QR/RFID Payment
+
+• Generate unique QR code for each student.
+• Optional RFID smart card integration.
+• Fast payment at cafeteria counter.
+Notifications
+
+• Order confirmation.
+• Meal reminders.
+• Low wallet balance alerts.
+• Recharge confirmation.
+• Monthly expenditure reports.
+Analytics Dashboard
+Parent Dashboard
+
+• Spending analysis.
+• Favorite foods.
+• Nutrition summary.
+School Dashboard
+
+• Daily sales.
+• Most ordered meals.
+• Peak ordering times.
+• Vendor performance.
+Vendor Dashboard
+
+• Orders by meal type.
+• Revenue reports.
+• Inventory consumption.
+Advanced Features
+AI Recommendation Engine
+
+• Suggest meals based on:
+   * Previous orders
+   * Nutrition goals
+   * Student preferences
+   * Sports activities
+Nutrition Tracking
+Display:
+
+• Calories
+• Protein
+• Carbohydrates
+• Fat
+• Allergens
+Sports Student Meal Plans
+
+• High Protein Meals
+• Athlete Meal Packages
+• Custom Nutrition Plans
+Attendance Integration
+
+• Automatically cancel meals if student is absent.
+• Refund wallet amount automatically.
+Emergency Parent Control
+
+• Instant card lock/unlock.
+• Spending limits.
+• Restricted food categories.
+Expected Outcome
+Build a scalable SaaS platform that enables schools to digitize cafeteria operations, allows parents to conveniently pre-order meals, provides cashless transactions through student cafeteria cards, tracks nutrition and spending, and improves cafeteria efficiency through analytics and automation.
+Business Goal: Create a solution similar to a combination of a school ERP, food delivery app, and prepaid smart card system specifically designed for school cafeterias.
+
+Expected user at the time will be max 1500
+Expected overall user max 2000
+
+Dont use different language for frontend and backend. 
+I think all the things can be used in react and with databases. What do you think, Am I thinking in right direction
