@@ -1,8 +1,10 @@
 import React from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 export const DashboardPage: React.FC = () => {
   const { user, logout } = useAuth()
+  const navigate = useNavigate()
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
@@ -16,13 +18,23 @@ export const DashboardPage: React.FC = () => {
             </p>
           </div>
 
-          <button onClick={logout} className="btn btn-outline">
-            Logout
-          </button>
+          <div className="space-x-2">
+            {user?.role === 'ADMIN' && (
+              <button 
+                onClick={() => navigate('/admin')} 
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
+                Admin Panel
+              </button>
+            )}
+            <button onClick={logout} className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400">
+              Logout
+            </button>
+          </div>
         </div>
 
         {/* User Info Card */}
-        <div className="card mb-8">
+        <div className="bg-white rounded-lg shadow p-6 mb-8">
           <h2 className="text-xl font-bold mb-4">Profile Information</h2>
           <div className="space-y-3">
             <div>
@@ -43,7 +55,7 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         {/* Coming Soon */}
-        <div className="card bg-blue-50 border-2 border-blue-200">
+        <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
           <h2 className="text-xl font-bold mb-4 text-blue-900">Coming Soon</h2>
           <p className="text-blue-800">
             More features are being developed. Check back soon for:

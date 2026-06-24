@@ -6,6 +6,8 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 import { LoginPage } from './pages/LoginPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { DashboardPage } from './pages/DashboardPage'
+import { AdminDashboard } from './pages/AdminDashboard'
+import { EditUserPage } from './pages/EditUserPage'
 
 const queryClient = new QueryClient()
 
@@ -23,6 +25,24 @@ function App() {
               element={
                 <ProtectedRoute>
                   <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Admin Routes */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute requiredRole={['ADMIN']}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/users/:userId/edit"
+              element={
+                <ProtectedRoute requiredRole={['ADMIN']}>
+                  <EditUserPage />
                 </ProtectedRoute>
               }
             />
